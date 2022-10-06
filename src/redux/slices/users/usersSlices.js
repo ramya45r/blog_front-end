@@ -3,54 +3,61 @@ import axios from "axios";
 
 //Register action
 export const registerUserAction = createAsyncThunk(
-  "/users/register",
-  async (user, rejectWithValue, getState, dispatch) => {
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const {data} = await axios.post(
-        "http://localhost:5000/api/users/register",
-        user,
-        config
-      );
-      return data;
-    } catch (error) {
-        if(!error ?.response){
-            throw error;
+  "users/register",
+  async (user,{rejectWithValue, getState, dispatch}) => {
+   try{
+     const config ={
+        headers:{
+          'Content-Type':'application/json',
         }
-        return rejectWithValue(error?.response?.data);
-    }
+     };
+     const {data}= await axios.post("http://localhost:5000/api/users/register",user,config);
+     return data;
+
+   }catch(error){
+      if(!error?.response){
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data)
+   }
+  });
+
+  
+
+//slices
+const  userSlices =createSlice({
+  name:'users',
+  initialState:{
+    userAuth:'login',
+  },
+  extraReducers:builder=>{
+    builder.addCase(registerUserAction.pending,(state,action)=>{
+      state.loading=true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(registerUserAction.fulfilled,(state,action)=>{
+      state.loading=  false;
+      state.registered =action?.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(registerUserAction.rejected,(state,action)=>{
+      console.log(action.payload);
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    })
+    
   }
-);
+})
 
-
-//Slices
-const userSlices = createSlice({
-    name:'users',
-    initialState:{
-        userAuth:"login",    
-    },
-    extraReducers:(builder)=>{
-        //Register
-        builder.addCase(registerUserAction.pending,(state,action)=>{
-           state.loading = true;
-        });
-        builder.addCase(registerUserAction.fulfilled,(state,action)=>{
-            state.loading = false;
-            state.registered = action?.payload ;
-            state.appErr=undefined;
-            state.serverErr =undefined;
-        });
-        builder.addCase(registerUserAction.rejected,(state,action)=>{
-            state.loading = false;
-            state.appErr=action?.payload?.message;
-            state.serverErr =action?.error?.message;
-        });
-            
-    },
-   
-});
 export default userSlices.reducer;
+    
+
+
+
+
+
+      
+  
