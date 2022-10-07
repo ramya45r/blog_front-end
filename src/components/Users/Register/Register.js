@@ -1,8 +1,10 @@
 import React from "react"
 import { useFormik } from "formik"
+
 import * as Yup from "yup"
 import { useDispatch, useSelector } from "react-redux";
-import { registerUserAction } from "../../../../redux/slices/users/usersSlices";
+import { useNavigate } from "react-router-dom";
+import { registerUserAction } from "../../../redux/slices/users/usersSlices";
 
 //Form schema
 const formSchema = Yup.object({
@@ -17,6 +19,7 @@ const formSchema = Yup.object({
 const Register = () => {
   //dispatch
   const dispatch =useDispatch()
+  const Navigate = useNavigate();
   //formik
   const formik = useFormik({
     initialValues: {
@@ -32,10 +35,21 @@ const Register = () => {
     },
     validationSchema: formSchema,
   });
+
+
+
 //select state from store
    const storeData = useSelector(store=>store?.users);
    const {loading,appErr,serverErr,registered} =storeData;
+   console.log(registered);
    console.log(appErr,serverErr);
+   //redirect
+if(registered){
+  if (registered) {
+    
+    Navigate("/login");
+  }
+}
   return (
     <section className="relative py-20 2xl:py-40 bg-gray-800 overflow-hidden">
       <div className="relative container px-4 mx-auto">
