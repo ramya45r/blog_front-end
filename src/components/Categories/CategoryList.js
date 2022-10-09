@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import { fetchCatagoriesAction } from "../../redux/slices/category/categorySlice";
 import DateFormatter from "../../utils/DateFormatter";
+import LoadingComponent from "../../utils/LoadingComponent";
 
 
 
@@ -19,7 +20,9 @@ const {categoryList,loading,appErr,serverErr} =category;
     <>
  <>
       {loading ? (
-        <h2 className="text-center text-3xl text-green-800">Loading</h2>
+      <>
+      <LoadingComponent/>
+      </>
       ) : appErr || serverErr ? (
         <h2 className="text-center text-3xl text-red-600">
           {serverErr} {serverErr}
@@ -54,7 +57,8 @@ const {categoryList,loading,appErr,serverErr} =category;
                       >
                         Created At
                       </th>
-                      <th
+                      
+                      <th 
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
@@ -92,7 +96,8 @@ const {categoryList,loading,appErr,serverErr} =category;
                           
                           {<DateFormatter date={category?.createdAt}/>}
                         </td>
-                        <Link>
+                        <Link to={`/update-category/${category?._id}`}>
+                        
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <PencilAltIcon className="h-5 text-indigo-500" />
                           </td>

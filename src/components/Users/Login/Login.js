@@ -27,14 +27,14 @@ const Login = () => {
       //dispath the action
       dispatch(loginUserAction(values))
 
-      console.log(values);
+      console.log(values,'values');
     },
     validationSchema: formSchema,
   });
   //redirect
   const store = useSelector(state => state?.users);
   const { userAuth, loading, serverErr, appErr } = store;
-  console.log(userAuth);
+  console.log(userAuth,'userAuth');
   if (userAuth){
     navigate('/')
   } 

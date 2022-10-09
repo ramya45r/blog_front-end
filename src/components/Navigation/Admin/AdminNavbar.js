@@ -12,10 +12,11 @@ import {
 } from "@heroicons/react/outline";
 import { PlusIcon } from "@heroicons/react/solid";
 import {  logoutAction } from "../../../redux/slices/users/usersSlices";
-
+import { loginUserAction } from "../../../redux/slices/users/usersSlices";
+import { useSelector } from "react-redux";
 
 const navigation = [
-  { name: "Home", href: "/", current: true },
+  { name: "Home", href: "/", current: false },
   { name: "Create", href: "/create-post", current: false },
   { name: "Posts", href: "/posts", current: false },
   { name: "Authors", href: "/users", current: false },
@@ -27,13 +28,20 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const AdminNavbar = ({isLogin}) => {
+const AdminNavbar = ({ isLogin}) => {
+  console.log( isLogin,"is/login");
+  const store = useSelector(state => state?.users);
+  const { userAuth, loading, serverErr, appErr } = store;
+ console.log(userAuth);
   //Navigation
   const userNavigation = [
-    { name: "Your Profile", href: `/profile/${isLogin?._id}` },
+    { name: "Your Profile", href: `/profile/${userAuth?._id}` },
     { name: "Change your password", href: "/update-password" },
     { name: "Settings", href: "/update-password" },
   ];
+
+
+ 
 
   //logout
   const dispatch = useDispatch();
@@ -116,7 +124,7 @@ const AdminNavbar = ({isLogin}) => {
                             <img
                               className="h-8 w-8 rounded-full"
                               // src={userAuth?.profilePhoto}
-                              alt="Admin Profile"
+                              alt="user"
                             />
                           </Menu.Button>
                         </div>

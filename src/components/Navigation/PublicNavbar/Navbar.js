@@ -8,9 +8,9 @@ import PublicNavbar from './PublicNavbar'
 const Navbar = () => {
     //Get user from store
     const state =useSelector(state =>state.users);
-    const {userAuth} =state;
+    const {userAuth,profile} =state;
     const isAdmin =userAuth?.isAdmin;
-   console.log(isAdmin);
+   console.log(isAdmin,'isAdmin');
   return (
     <div>
      {isAdmin? <AdminNavbar/>: userAuth ? <PrivateNavbar/>: <PublicNavbar/> }
