@@ -32,7 +32,7 @@ const AdminNavbar = ({ isLogin}) => {
   console.log( isLogin,"is/login");
   const store = useSelector(state => state?.users);
   const { userAuth, loading, serverErr, appErr } = store;
- console.log(userAuth);
+//  console.log(userAuth);
   //Navigation
   const userNavigation = [
     { name: "Your Profile", href: `/profile/${userAuth?._id}` },

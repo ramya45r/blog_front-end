@@ -27,7 +27,7 @@ const Login = () => {
       //dispath the action
       dispatch(loginUserAction(values))
 
-      console.log(values,'values');
+      // console.log(values,'values');
     },
     validationSchema: formSchema,
   });
