@@ -1,5 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Dropzone from "react-dropzone";
+import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { createPostAction } from "../../redux/slices/Posts/PostSlices";
 import CategoryDropDown from "../Categories/CategoryDropdown";
@@ -9,8 +11,24 @@ const formSchema = Yup.object({
   title: Yup.string().required("Title is required"),
   description: Yup.string().required("Description is required"),
   category: Yup.object().required("Category is required"),
+  image: Yup.string().required("Image is required"),
 });
 
+//css for dropzone
+const Container = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+border-color:'red'
+  transition: border 0.24s ease-in-out;
+`;
 export default function CreatePost() {
   const dispatch = useDispatch();
   //formik
@@ -19,6 +37,7 @@ export default function CreatePost() {
       title: "",
       description: "",
       category: "",
+      image:"",
     },
     onSubmit: values => {
       //dispath the action
@@ -27,6 +46,7 @@ export default function CreatePost() {
         category: values?.category?.label,
         title: values?.title,
         description: values?.description,
+        image:values?.image,
       };
       dispatch(createPostAction(data));
     },
@@ -101,6 +121,32 @@ export default function CreatePost() {
                   className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
                   type="text"
                 ></textarea>
+                {/* {image component} */}
+                <Container className="container bg-gray-700">
+                  <Dropzone
+                    onBlur={formik.handleBlur("image")}
+                    accept="image/jpeg, image/png image/webp"
+                    onDrop={(acceptedFiles) => {
+                      formik.setFieldValue("image", acceptedFiles[0]);
+                    }}
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <div className="container">
+                        <div
+                          {...getRootProps({
+                            className: "dropzone",
+                            onDrop: (event) => event.stopPropagation(),
+                          })}
+                        >
+                          <input {...getInputProps()} />
+                          <p className="text-gray-300 text-lg cursor-pointer hover:text-gray-500">
+                            Click here to select image
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </Dropzone>
+                </Container>
                 {/* Err msg */}
                 <div className="text-red-500">
                   {formik?.touched?.description && formik.errors?.description}

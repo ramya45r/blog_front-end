@@ -11,7 +11,7 @@ import {
   LogoutIcon,
 } from "@heroicons/react/outline";
 import { PlusIcon } from "@heroicons/react/solid";
-import {  logoutAction } from "../../../redux/slices/users/usersSlices";
+import {  logoutAction,uploadProfilePhotoAction } from "../../../redux/slices/users/usersSlices";
 import { loginUserAction } from "../../../redux/slices/users/usersSlices";
 import { useSelector } from "react-redux";
 
@@ -31,7 +31,7 @@ function classNames(...classes) {
 const AdminNavbar = ({ isLogin}) => {
   console.log( isLogin,"is/login");
   const store = useSelector(state => state?.users);
-  const { userAuth, loading, serverErr, appErr } = store;
+  const { userAuth, loading, serverErr, appErr,profile } = store;
 //  console.log(userAuth);
   //Navigation
   const userNavigation = [
@@ -123,9 +123,10 @@ const AdminNavbar = ({ isLogin}) => {
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
-                              // src={userAuth?.profilePhoto}
+                              src={profile?.profilePhoto}
                               alt="user"
                             />
+                            <span></span>
                           </Menu.Button>
                         </div>
                         <Transition

@@ -12,6 +12,7 @@ const resetPostDelete = createAction("post/delete");
 
 export const createPostAction = createAsyncThunk('post/created',async(
     post,{rejectWithValue,getState,dispatch})=>{
+        console.log(post);
     //get user token
     const user = getState()?.users;
     const { userAuth } = user;
@@ -27,7 +28,7 @@ export const createPostAction = createAsyncThunk('post/created',async(
         formData.append('description',post?.description);
         formData.append('category',post?.category);
         formData.append('image',post?.image);
-
+        console.log(formData,post);
         const { data } = await axios.post(`${baseUrl}/api/posts`,formData,config)
         //dispatch data
             dispatch(resetPost())

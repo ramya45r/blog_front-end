@@ -101,11 +101,12 @@ export const userProfileAction = createAsyncThunk(
   }
 );
 
-//upload profile photo
-
+//Upload Profile Photo
 export const uploadProfilePhotoAction = createAsyncThunk(
   "user/profile-photo",
   async (userImg, { rejectWithValue, getState, dispatch }) => {
+    console.log(userImg);
+    //get user token
     const user = getState()?.users;
     const { userAuth } = user;
     const config = {
@@ -116,22 +117,21 @@ export const uploadProfilePhotoAction = createAsyncThunk(
     try {
       //http call
       const formData = new FormData();
+
       formData.append("image", userImg?.image);
+
       const { data } = await axios.put(
-        `/api/users/profilephoto-upload`,
+        `${baseUrl}/api/users/profilephoto-upload`,
         formData,
         config
       );
-      console.log(data,'data');
       return data;
-     
     } catch (error) {
       if (!error?.response) throw error;
       return rejectWithValue(error?.response?.data);
     }
   }
 );
-
 // Follow
 export const followUserAction = createAsyncThunk(
   "user/follow",
@@ -257,22 +257,23 @@ const usersSlices = createSlice({
       state.profileLoading = false;
     });
      //--------------upload profile photo --------------
-     builder.addCase(uploadProfilePhotoAction.pending, (state, action) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverError = undefined;
-    });
-    builder.addCase(uploadProfilePhotoAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.profilePhoto = action?.payload;
-      state.appErr = undefined;
-      state.serverError = undefined;
-    });
-    builder.addCase(uploadProfilePhotoAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action?.payload?.message;
-      state.serverError = action?.error?.message;
-    });
+   
+   builder.addCase(uploadProfilePhotoAction.pending, (state, action) => {
+    state.loading = true;
+    state.appErr = undefined;
+    state.serverErr = undefined;
+  });
+  builder.addCase(uploadProfilePhotoAction.fulfilled, (state, action) => {
+    state.profilePhoto = action?.payload;
+    state.loading = false;
+    state.appErr = undefined;
+    state.serverErr = undefined;
+  });
+  builder.addCase(uploadProfilePhotoAction.rejected, (state, action) => {
+    state.appErr = action?.payload?.message;
+    state.serverErr = action?.error?.message;
+    state.loading = false;
+  });
 
 
    //user Follow
