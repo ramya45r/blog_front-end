@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { PlusCircleIcon, BookOpenIcon } from "@heroicons/react/solid";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -15,7 +16,7 @@ const formSchema = Yup.object({
 
 const AddNewCategory = () => {
   const dispatch = useDispatch();
-    
+  const navigate = useNavigate();
 //formik
 const formik = useFormik({
   initialValues: {
@@ -24,7 +25,7 @@ const formik = useFormik({
   onSubmit: values => {
     //dispath the action
     dispatch(createCategoryAction(values))
-
+    navigate("/category-list")
     console.log(values);
   },
   validationSchema: formSchema,

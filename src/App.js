@@ -7,9 +7,10 @@ import Profile from "./components/Users/Profile/Profile";
 import Register from "./components/Users/Register/Register";
 import CategoryList from "./components/Categories/CategoryList";
 import UpdateCategory from "./components/Categories/UpdateCategory";
-import CreatePost from "./components/Posts/CreatePost";
+import CreatePost from "./components/Posts/CreatePost/CreatePost";
 import UpdatePassword from "./components/Users/password/PasswordManagement";
 import UploadProfilePhoto from "./components/Users/Profile/UploadProfilePhoto";
+import PostsList from "./components/Posts/CreatePost/PostsList";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
+        <Route path="/posts" element={<PostsList />} />
           <Route path="/add-category" element={<AddNewCategory />} />
           <Route path="/category-List" element={<CategoryList />} />
           <Route path="/create-post" element={<CreatePost />} />

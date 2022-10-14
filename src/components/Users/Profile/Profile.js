@@ -27,7 +27,7 @@ export default function Profile() {
     unFollowed,
     
   } = users;
-  console.log(profile);
+  console.log(profile,'profile');
   //fetch user profile
  //fetch user profile
  useEffect(() => {

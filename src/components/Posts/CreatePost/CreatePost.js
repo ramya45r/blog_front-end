@@ -1,10 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Dropzone from "react-dropzone";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { createPostAction } from "../../redux/slices/Posts/PostSlices";
-import CategoryDropDown from "../Categories/CategoryDropdown";
+import { createpostAction } from "../../../redux/slices/Posts/PostSlices";
+import CategoryDropDown from "../../Categories/CategoryDropdown";
 
 //Form schema
 const formSchema = Yup.object({
@@ -31,6 +32,12 @@ border-color:'red'
 `;
 export default function CreatePost() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  //select store data
+  const post =useSelector(state=>state.post)
+  const { postCreated,loading, appErr, serverErr } = post;
+  console.log(postCreated,'pppppp' );
+  
   //formik
   const formik = useFormik({
     initialValues: {
@@ -48,7 +55,8 @@ export default function CreatePost() {
         description: values?.description,
         image:values?.image,
       };
-      dispatch(createPostAction(data));
+      dispatch(createpostAction(data));
+      navigate("/posts")
     },
     validationSchema: formSchema,
   });
@@ -154,7 +162,7 @@ export default function CreatePost() {
               </div>
               <div>
                 {/* Submit btn */}
-                <button
+               <button
                   type="submit"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >

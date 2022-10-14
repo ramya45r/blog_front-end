@@ -7,7 +7,7 @@ const store=configureStore({
         users:usersReducer,
         auth:{},
         category:categoriesReducer,
-        posts:postReducer
+        post:postReducer
     },
 });
 export default store;

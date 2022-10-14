@@ -1,6 +1,7 @@
+import { useNavigate } from "react-router-dom";
 import { PlusCircleIcon, BookOpenIcon } from "@heroicons/react/solid";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
+
 import * as Yup from "yup";
 import { useSelector,useDispatch  } from "react-redux";
 import { fetchCatagoryAction,updateCatagoriesAction,deleteCatagoriesAction } from "../../redux/slices/category/categorySlice";
@@ -32,6 +33,8 @@ const state =useSelector(state =>state?.category);
 const {loading,appErr,serverErr,category,UpdateCategory} =state;
 
 
+
+
     
 //formik
 const formik = useFormik({
@@ -44,7 +47,7 @@ const formik = useFormik({
 
     //dispath the action
     dispatch(updateCatagoriesAction({title:values.title,id}))
-
+    navigate("/category-list")
     console.log(values);
   },
   validationSchema: formSchema,
