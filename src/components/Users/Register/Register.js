@@ -1,7 +1,7 @@
-import React from "react"
-import { useFormik } from "formik"
+import React from "react";
+import { useFormik } from "formik";
 
-import * as Yup from "yup"
+import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registerUserAction } from "../../../redux/slices/users/usersSlices";
@@ -18,7 +18,7 @@ const formSchema = Yup.object({
 //-------------------------------
 const Register = () => {
   //dispatch
-  const dispatch =useDispatch()
+  const dispatch = useDispatch();
   const Navigate = useNavigate();
   //formik
   const formik = useFormik({
@@ -28,28 +28,25 @@ const Register = () => {
       email: "",
       password: "",
     },
-    onSubmit: values => {
-     //dispatch action
-     dispatch(registerUserAction(values))
-     console.log(values);
+    onSubmit: (values) => {
+      //dispatch action
+      dispatch(registerUserAction(values));
+      console.log(values);
     },
     validationSchema: formSchema,
   });
 
-
-
-//select state from store
-   const storeData = useSelector(store=>store?.users);
-   const {loading,appErr,serverErr,registered} =storeData;
-   console.log(registered);
-   console.log(appErr,serverErr);
-   //redirect
-if(registered){
+  //select state from store
+  const storeData = useSelector((store) => store?.users);
+  const { loading, appErr, serverErr, registered } = storeData;
+  console.log(registered);
+  console.log(appErr, serverErr);
+  //redirect
   if (registered) {
-    
-    Navigate("/login");
+    if (registered) {
+      Navigate("/login");
+    }
   }
-}
   return (
     <section className="relative py-20 2xl:py-40 bg-gray-800 overflow-hidden">
       <div className="relative container px-4 mx-auto">

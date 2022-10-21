@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import JoditEditor from "jodit-react";
 import Dropzone from "react-dropzone";
+import { useMemo, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { createpostAction } from "../../../redux/slices/Posts/PostSlices";
@@ -31,38 +33,40 @@ border-color:'red'
   transition: border 0.24s ease-in-out;
 `;
 export default function CreatePost() {
+  const editor = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //select store data
-  const post =useSelector(state=>state.post)
-  const { postCreated,loading, appErr, serverErr } = post;
-  console.log(postCreated,'pppppp' );
-  
+  const post = useSelector((state) => state.post);
+  const { postCreated, loading, appErr, serverErr } = post;
+  console.log(postCreated, "pppppp");
+
   //formik
   const formik = useFormik({
     initialValues: {
       title: "",
       description: "",
       category: "",
-      image:"",
+      image: "",
     },
-    onSubmit: values => {
+    onSubmit: (values) => {
       //dispath the action
       console.log(values);
       const data = {
         category: values?.category?.label,
         title: values?.title,
         description: values?.description,
-        image:values?.image,
+        image: values?.image,
       };
       dispatch(createpostAction(data));
-      navigate("/posts")
+      navigate("/posts");
     },
     validationSchema: formSchema,
   });
 
   return (
     <>
+          <div class="container mx-auto">
       <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-300">
@@ -120,7 +124,8 @@ export default function CreatePost() {
                   Description
                 </label>
                 {/* Description */}
-                <textarea
+                <JoditEditor
+                  ref={editor}
                   value={formik.values.description}
                   onChange={formik.handleChange("description")}
                   onBlur={formik.handleBlur("description")}
@@ -128,7 +133,7 @@ export default function CreatePost() {
                   cols="10"
                   className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
                   type="text"
-                ></textarea>
+                />
                 {/* {image component} */}
                 <Container className="container bg-gray-700">
                   <Dropzone
@@ -162,7 +167,7 @@ export default function CreatePost() {
               </div>
               <div>
                 {/* Submit btn */}
-               <button
+                <button
                   type="submit"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
@@ -173,6 +178,7 @@ export default function CreatePost() {
           </div>
         </div>
       </div>
+          </div>
     </>
   );
 }

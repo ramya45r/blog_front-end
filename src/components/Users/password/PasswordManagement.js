@@ -1,8 +1,4 @@
-
-
 const UpdatePassword = () => {
-
-
   return (
     <div className="min-h-screen bg-gray-700  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -13,7 +9,7 @@ const UpdatePassword = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" >
+          <form className="space-y-6">
             <div className="flex items-center pl-6 mb-6 border border-gray-50 bg-white rounded-full">
               <span className="inline-block pr-3 border-r border-gray-50">
                 <svg
@@ -37,16 +33,13 @@ const UpdatePassword = () => {
               {/* Password */}
 
               <input
-               
                 className="w-full border-gray-300 border-2 pr-6 pl-4 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                 type="password"
                 placeholder=" Password"
               />
             </div>
             {/* Err msg */}
-            <div className="text-red-400 mb-2">
-             
-            </div>
+            <div className="text-red-400 mb-2"></div>
             <div>
               {/* Submit btn */}
               <button

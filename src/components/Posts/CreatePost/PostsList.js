@@ -6,7 +6,7 @@ import { fetchAllPostAction } from "../../../redux/slices/Posts/PostSlices";
 import { fetchCatagoriesAction } from "../../../redux/slices/category/categorySlice";
 import LoadingComponent from "../../../utils/LoadingComponent";
 import DateFormatter from "../../../utils/DateFormatter";
-
+import * as DOMPurify from "dompurify";
 
 export default function PostsList() {
   const dispatch = useDispatch();
@@ -68,7 +68,7 @@ export default function PostsList() {
                         {catServerErr} {catAppErr}
                       </h1>
                     ) : categoryList?.length <= 0 ? (
-                      <h1>No post found</h1>
+                      <h1 className="text-yellow-400 text-lg text-center">No category found</h1>
                     ) : (
                       categoryList?.map((category) => (
                         <li>
@@ -88,8 +88,8 @@ export default function PostsList() {
                   <h1>Loading...</h1>
                 ) : appErr || serverErr ? (
                   <h1>Err</h1>
-                ) : postLists?.lenght <= 0 ? (
-                  <h1>No Post Found</h1>
+                ) : postLists?.length <= 0 ? (
+                  <h1 className="text-yellow-400 text-lg text-center">No Post Found</h1>
                 ) : (
                   postLists?.map(post => (
                     <div class="flex flex-wrap bg-blue-900 -mx-3  lg:mb-6">
@@ -143,11 +143,22 @@ export default function PostsList() {
                             {post?.title}
                           </h3>
                         </Link>
-                        <p class="text-gray-300">{post?.description}</p>
+                        <div
+                              className="text-black truncate "
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(post?.description),
+                              }}
+                            ></div>
                         {/* Read more */}
-                        <Link className="text-indigo-500 hover:underline">
-                          Read More..
-                        </Link>
+                        {/* Read more */}
+                        <div className="mt-5">
+                              <Link
+                                to={`/posts/${post?._id}`}
+                                className=" text-gray-500 hover:underline "
+                              >
+                                Read More..
+                              </Link>
+                            </div>
                         {/* User Avatar */}
                         <div className="mt-6 flex items-center">
                           <div className="flex-shrink-0">
@@ -189,4 +200,4 @@ export default function PostsList() {
       </section>
     </>
   );
-}
+                          }

@@ -1,12 +1,11 @@
 import React from "react";
 import { useFormik } from "formik";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 // import poster from "../../../img/poster.png";
 import { loginUserAction } from "../../../redux/slices/users/usersSlices";
-
 
 //Form schema
 const formSchema = Yup.object({
@@ -15,29 +14,29 @@ const formSchema = Yup.object({
 });
 
 const Login = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   //formik
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: values => {
+    onSubmit: (values) => {
       //dispath the action
-      dispatch(loginUserAction(values))
+      dispatch(loginUserAction(values));
 
       // console.log(values,'values');
     },
     validationSchema: formSchema,
   });
   //redirect
-  const store = useSelector(state => state?.users);
+  const store = useSelector((state) => state?.users);
   const { userAuth, loading, serverErr, appErr } = store;
-  console.log(userAuth,'userAuth');
-  if (userAuth){
-    navigate('/')
-  } 
+  console.log(userAuth, "userAuth");
+  if (userAuth) {
+    navigate("/");
+  }
   return (
     <>
       <section className="min-h-screen relative py-20 2xl:py-40 bg-white-900 overflow-hidden">
@@ -60,11 +59,11 @@ const Login = () => {
                       Login to your Account
                     </h3>
                     {/*display error */}
-                   {serverErr || appErr ?(
+                    {serverErr || appErr ? (
                       <h2 className="text-red-500 text-center">
-                        {serverErr}  {appErr}
+                        {serverErr} {appErr}
                       </h2>
-                    ) :null}
+                    ) : null}
                     <div className="flex items-center pl-6 mb-3  border border-slate-400 bg-white rounded-full">
                       <span className="inline-block pr-3 border-r border-black-50">
                         <svg
@@ -134,27 +133,30 @@ const Login = () => {
                       {formik.touched.password && formik.errors.password}
                     </div>
                     {/* Login btn */}
-                    {loading ? (<button
-                     disabled
-                      className="py-4 w-full bg-gray-500  text-white font-bold rounded-full transition duration-200"
-                    >
-                      Loading.........
-                    </button>):
-                    (<button
-                      type="submit"
-                      className="py-4 w-full bg-slate-900 hover:bg-black text-white font-bold rounded-full transition duration-200"
-                    >
-                      Login
-                    </button>)}
-                    </form>
-                    <div className="text-center mt-5">
+                    {loading ? (
+                      <button
+                        disabled
+                        className="py-4 w-full bg-gray-500  text-white font-bold rounded-full transition duration-200"
+                      >
+                        Loading.........
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="py-4 w-full bg-slate-900 hover:bg-black text-white font-bold rounded-full transition duration-200"
+                      >
+                        Login
+                      </button>
+                    )}
+                  </form>
+                  <div className="text-center mt-5">
                     <Link
-                to="/password-reset-token"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-               Forget Your Password ?
-              </Link>
-              </div>
+                      to="/password-reset-token"
+                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                    >
+                      Forget Your Password ?
+                    </Link>
+                  </div>
                 </div>
               </div>
               <div className="w-full lg:w-3/5 px-4 mb-16 lg:mb-0 order-first lg:order-last">
