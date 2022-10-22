@@ -1,15 +1,49 @@
+import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate,useParams } from "react-router-dom";
+import * as Yup from "yup";
+import { updatePasswordAction } from "../../../redux/slices/users/usersSlices";
+
+//Form schema
+const formSchema = Yup.object({
+  password: Yup.string().required("Password is required"),
+});
 const UpdatePassword = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  //formik
+  const formik = useFormik({
+    initialValues: {
+      password: "",
+    },
+    onSubmit: (values) => {
+      //dispath the action
+    dispatch(updatePasswordAction(values?.password))
+    },
+    validationSchema: formSchema,
+  });
+  const users = useSelector(state => state?.users);
+  const { isPasswordUpdated, loading, appErr, serverErr, userAuth } = users;
+
+   //redirect
+   if(isPasswordUpdated){
+    navigate(`/profile/${id}`);
+  }
   return (
     <div className="min-h-screen bg-gray-700  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-300">
           Change your password
-        </h2>
+        </h2> 
+        <h3 className="text-center pt-2 text-red-400">
+          {serverErr || appErr ?<p>{serverErr} {appErr}</p>:null}
+        </h3>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={formik.handleSubmit}>
             <div className="flex items-center pl-6 mb-6 border border-gray-50 bg-white rounded-full">
               <span className="inline-block pr-3 border-r border-gray-50">
                 <svg
@@ -33,21 +67,31 @@ const UpdatePassword = () => {
               {/* Password */}
 
               <input
+               value={formik.values.password}
+               onChange={formik.handleChange("password")}
+               onBlur={formik.handleBlur("password")}
                 className="w-full border-gray-300 border-2 pr-6 pl-4 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                 type="password"
                 placeholder=" Password"
               />
             </div>
             {/* Err msg */}
-            <div className="text-red-400 mb-2"></div>
+            <div className="text-red-400 mb-2">
+            {formik.touched.email && formik.errors.password}
+            </div>
             <div>
               {/* Submit btn */}
-              <button
+             {loading ?  <button
+                disabled
+                className="inline-flex bg-gray-700"
+              >
+                <span>Loaading.....</span>
+              </button>:  <button
                 type="submit"
                 className="inline-flex bg-indigo-700 justify-center w-full px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-200  hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
               >
                 <span>Update Password</span>
-              </button>
+              </button>}
             </div>
           </form>
         </div>

@@ -20,6 +20,7 @@ export const createCategoryAction = createAsyncThunk(
       const { data } = await axios.post(`${baseUrl}/api/category`, {
         title: category?.title,
       },config);
+     
       return data;
     } catch (error) {
       if (!error?.response) {

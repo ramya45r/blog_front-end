@@ -16,7 +16,7 @@ const navigation = [
   { name: "Home", href: "/", current: false },
   // { name: "Create", href: "/create-post", current: false },
   { name: "Posts", href: "/posts", current: false },
-  { name: "Authors", href: "/users", current: false },
+  // { name: "Authors", href: "/users", current: false },
 ];
 
 function classNames(...classes) {
@@ -107,7 +107,7 @@ const PrivateNavbar = ({ isLogin }) => {
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
-                              // src={isLogin?.profilePhoto}
+                              src={isLogin?.profilePhoto}
                               alt=""
                             />
                           </Menu.Button>

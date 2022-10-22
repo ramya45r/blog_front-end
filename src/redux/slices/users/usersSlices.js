@@ -1,7 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice,createAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseUrl from "../../../utils/baseURL";
 import axiosInstance from "../../../utils/api_instance";
+//Redirect action
+const resetUserAction =createAction('user/profile/reset')
+const resetPasswordAction =createAction('password/reset')
 //register action
 export const registerUserAction = createAsyncThunk(
   "users/register",
@@ -71,8 +74,93 @@ export const logoutAction = createAsyncThunk(
   }
 );
 
+//fetch User details
+export const fetchUserDetailsAction = createAsyncThunk(
+  "user/detail",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.get(`${baseUrl}/api/users/${id}`);
+      return data;
+    } catch (error) {
+      if (!error?.response) throw error;
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+//fetch All users
+export const fetchUsersAction = createAsyncThunk(
+  "user/list",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+        //get user token
+        const user = getState()?.users;
+        const { userAuth } = user;
+        const config = {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        };
+    try {
+      const { data } = await axios.get(`${baseUrl}/api/users`,config);
+      return data;
+    } catch (error) {
+      if (!error?.response) throw error;
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 
 
+//Block User
+export const blockUserAction = createAsyncThunk(
+  "user/block",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    try {
+      const { data } = await axios.put(
+        `${baseUrl}/api/users/block-user/${id}`,
+        {},
+        config
+      );
+      return data;
+    } catch (error) {
+      if (!error?.response) throw error;
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+//unBlock User
+export const unBlockUserAction = createAsyncThunk(
+  "user/unblock",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    try {
+      const { data } = await axios.put(
+        `${baseUrl}/api/users/unblock-user/${id}`,
+        {},
+        config
+      );
+      return data;
+    } catch (error) {
+      if (!error?.response) throw error;
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 // Profile
 export const userProfileAction = createAsyncThunk(
   "user/profile",
@@ -191,6 +279,75 @@ export const unfollowUserAction = createAsyncThunk(
   }
 );
 
+//update action
+export const updateUserAction = createAsyncThunk(
+  "users/update",
+  async (userData, { rejectWithValue, getState, dispatch }) => {
+     //get user token
+     const user = getState()?.users;
+     const { userAuth } = user;
+     const config = {
+       headers: {
+         Authorization: `Bearer ${userAuth?.token}`,
+       },
+     };
+    //http call
+    try {
+      const { data } = await axios.put(
+        `${baseUrl}/api/users`,
+        {
+          lastName:userData?.lastName,
+          firstName:userData?.lastName,
+          bio:user?.bio,
+          email:user?.email
+
+        },
+        config
+      );
+      //dispatch
+      dispatch(resetUserAction())
+      return data;
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+  //Update Password
+  export const updatePasswordAction = createAsyncThunk(
+    "password/update",
+    async (password, { rejectWithValue, getState, dispatch }) => {
+      //get user token
+      const user = getState()?.users;
+      const { userAuth } = user;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userAuth?.token}`,
+        },
+      };
+      //http call
+      try {
+        const { data } = await axios.put(
+          `${baseUrl}/api/users/password`,
+          {
+            password,
+          },
+          config
+        );
+        //dispatch
+        dispatch(resetUserAction());
+        return data;
+      } catch (error) {
+        if (!error.response) {
+          throw error;
+        }
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  );
+
 //get user from local storage and place into store
 const userLoginFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -203,7 +360,9 @@ const usersSlices = createSlice({
     userAuth: userLoginFromStorage,
   },
   extraReducers: builder => {
-    //register
+
+//--------------------------------register------------------------------------//
+
     builder.addCase(registerUserAction.pending, (state, action) => {
       state.loading = true;
       state.appErr = undefined;
@@ -222,7 +381,8 @@ const usersSlices = createSlice({
       state.serverErr = action?.error?.message;
     });
 
-    //login
+//-------------------------------------login-------------------------------------//
+
     builder.addCase(loginUserAction.pending, (state, action) => {
       state.loading = true;
       state.appErr = undefined;
@@ -239,7 +399,88 @@ const usersSlices = createSlice({
       state.serverErr = action?.error?.message;
       state.loading = false;
     });
-    //Profile
+//-------------------------------------------user details--------------------------------------//
+
+     builder.addCase(fetchUserDetailsAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(fetchUserDetailsAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userDetails = action?.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(fetchUserDetailsAction.rejected, (state, action) => {
+      
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
+//--------------------------------------fetch all users----------------------------------//
+
+     builder.addCase(fetchUsersAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(fetchUsersAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.usersList= action?.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(fetchUsersAction.rejected, (state, action) => {
+      
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
+//-------------------------Block users-------------------------------------------//
+
+      //Block user
+    builder.addCase(blockUserAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(blockUserAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.block = action?.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(blockUserAction.rejected, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
+//---------------------------------unBlock user----------------------------------//
+
+    builder.addCase(unBlockUserAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(unBlockUserAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.unblock = action?.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(unBlockUserAction.rejected, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+//--------------------------Profile--------------------------------------//
+
     builder.addCase(userProfileAction.pending, (state, action) => {
       state.profileLoading = true;
       state.profileAppErr = undefined;
@@ -256,6 +497,31 @@ const usersSlices = createSlice({
       state.profileServerErr = action?.error?.message;
       state.profileLoading = false;
     });
+
+//--------------------------------update----------------------------------------------//  
+     builder.addCase(updateUserAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(resetUserAction,(state, action) => {
+      state.isUpdated = true;
+
+    })
+    builder.addCase(updateUserAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userUpdated = action?.payload;
+      state.isUpdated=false;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(updateUserAction.rejected, (state, action) => {
+      console.log(action.payload);
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
      //--------------upload profile photo --------------
    
    builder.addCase(uploadProfilePhotoAction.pending, (state, action) => {
@@ -274,6 +540,7 @@ const usersSlices = createSlice({
     state.serverErr = action?.error?.message;
     state.loading = false;
   });
+
 
 
    //user Follow
@@ -313,6 +580,28 @@ const usersSlices = createSlice({
     state.unFollowedAppErr = action?.payload?.message;
     state.unfollowServerErr = action?.error?.message;
   });
+  //update password
+  builder.addCase(updatePasswordAction.pending, (state, action) => {
+    state.loading = true;
+    state.appErr = undefined;
+    state.serverErr = undefined;
+  });
+  builder.addCase(resetPasswordAction, (state, action) => {
+    state.isPasswordUpdated = true;
+  });
+  builder.addCase(updatePasswordAction.fulfilled, (state, action) => {
+    state.loading = false;
+    state.passwordUpdated = action?.payload;
+    state.isPasswordUpdated = false;
+    state.appErr = undefined;
+    state.serverErr = undefined;
+  });
+  builder.addCase(updatePasswordAction.rejected, (state, action) => {
+    state.loading = false;
+    state.appErr = action?.payload?.message;
+    state.serverErr = action?.error?.message;
+  });
+
     
 
 

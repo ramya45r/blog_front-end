@@ -2,37 +2,33 @@ import { useNavigate } from "react-router-dom";
 import { PlusCircleIcon, BookOpenIcon } from "@heroicons/react/solid";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useSelector,useDispatch  } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { createCategoryAction } from "../../redux/slices/category/categorySlice";
-
 
 //Form schema
 const formSchema = Yup.object({
- title: Yup.string().required("Title is required"),
-
+  title: Yup.string().required("Title is required"),
 });
-
-
 
 const AddNewCategory = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-//formik
-const formik = useFormik({
-  initialValues: {
-    title: "",
-  },
-  onSubmit: values => {
-    //dispath the action
-    dispatch(createCategoryAction(values))
-    navigate("/category-list")
-    console.log(values);
-  },
-  validationSchema: formSchema,
-});
-//Get data from store
-const state =useSelector(state =>state?.category);
-const {loading,appErr,serverErr,category} =state;
+  //formik
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+    },
+    onSubmit: (values) => {
+      //dispath the action
+      dispatch(createCategoryAction(values));
+      navigate("/category-list");
+      console.log(values);
+    },
+    validationSchema: formSchema,
+  });
+  //Get data from store
+  const state = useSelector((state) => state?.category);
+  const { loading, appErr, serverErr, category } = state;
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -45,10 +41,14 @@ const {loading,appErr,serverErr,category} =state;
             <p className="font-medium text-indigo-600 hover:text-indigo-500">
               These are the categories user will select when creating a post
             </p>
-          {/* Display errot */}
-          <div>
-            {appErr || serverErr ? <h2 className="text-red-500-center text-lg">{serverErr} {appErr}</h2>:null} 
-          </div>
+            {/* Display errot */}
+            <div>
+              {appErr || serverErr ? (
+                <h2 className="text-red-500-center text-lg">
+                  {serverErr} {appErr}
+                </h2>
+              ) : null}
+            </div>
           </p>
         </div>
         {/* Form */}
@@ -61,7 +61,7 @@ const {loading,appErr,serverErr,category} =state;
               </label>
               {/* Title */}
               <input
-              value={formik.values.title}
+                value={formik.values.title}
                 onChange={formik.handleChange("title")}
                 onBlur={formik.handleBlur("title")}
                 type="text"
@@ -70,7 +70,7 @@ const {loading,appErr,serverErr,category} =state;
                 placeholder="New Category"
               />
               <div className="text-red-400 mb-2">
-                {formik.touched.title && formik.errors.title} 
+                {formik.touched.title && formik.errors.title}
               </div>
             </div>
           </div>
@@ -78,33 +78,33 @@ const {loading,appErr,serverErr,category} =state;
           <div>
             <div>
               {/* Submit */}
-         {loading ?  
-          (<button
-               disabled
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <PlusCircleIcon
-                    className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
-                    aria-hidden="true"
-                  />
-                </span>
-               Loading please wait...
-              </button>
-  ):(
-    <button
-    type="submit"
-    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-  >
-    <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-      <PlusCircleIcon
-        className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
-        aria-hidden="true"
-      />
-    </span>
-    Add new Category
-  </button>
-  )}
+              {loading ? (
+                <button
+                  disabled
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <PlusCircleIcon
+                      className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
+                      aria-hidden="true"
+                    />
+                  </span>
+                  Loading please wait...
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2"
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <PlusCircleIcon
+                      className="h-5 w-5 group-hover:text-black"
+                      aria-hidden="true"
+                    />
+                  </span>
+                  Add new Category
+                </button>
+              )}
             </div>
           </div>
         </form>

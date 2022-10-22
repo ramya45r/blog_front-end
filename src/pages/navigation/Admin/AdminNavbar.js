@@ -46,6 +46,8 @@ const AdminNavbar = ({ isLogin}) => {
   //logout
   const dispatch = useDispatch();
 
+  
+
   return (
     <Disclosure as="nav" className="bg-blue-900">
       {({ open }) => (
@@ -123,7 +125,7 @@ const AdminNavbar = ({ isLogin}) => {
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
-                              src={profile?.profilePhoto}
+                              src={isLogin?.profilePhoto}
                               alt="user"
                             />
                             <span></span>
@@ -190,7 +192,7 @@ const AdminNavbar = ({ isLogin}) => {
               <div className="flex items-center px-5 sm:px-6">
                 <div className="flex-shrink-0">
                   {/* Image */}
-                  <img className="h-10 w-10 rounded-full" src="" alt="" />
+                  <img className="h-10 w-10 rounded-full" src={isLogin?.profilePhoto} alt="" />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-white">

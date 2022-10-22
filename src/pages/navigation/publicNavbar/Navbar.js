@@ -13,7 +13,7 @@ const Navbar = () => {
    console.log(isAdmin,'isAdmin');
   return (
     <div>
-     {isAdmin? <AdminNavbar/>: userAuth ? <PrivateNavbar/>: <PublicNavbar/> }
+     {isAdmin? <AdminNavbar isLogin={userAuth}/>: userAuth ? <PrivateNavbar isLogin={userAuth}/>: <PublicNavbar/> }
     </div>
   )
 }

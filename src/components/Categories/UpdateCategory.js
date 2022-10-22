@@ -3,60 +3,55 @@ import { PlusCircleIcon, BookOpenIcon } from "@heroicons/react/solid";
 import { useFormik } from "formik";
 
 import * as Yup from "yup";
-import { useSelector,useDispatch  } from "react-redux";
-import { fetchCatagoryAction,updateCatagoriesAction,deleteCatagoriesAction } from "../../redux/slices/category/categorySlice";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchCatagoryAction,
+  updateCatagoriesAction,
+  deleteCatagoriesAction,
+} from "../../redux/slices/category/categorySlice";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-
-
 //Form schema
 const formSchema = Yup.object({
- title: Yup.string().required("Title is required"),
-
+  title: Yup.string().required("Title is required"),
 });
-
-
 
 const UpdateCategory = () => {
-    const { id } = useParams();
-    console.log(id,"rfghjk");
-    
+  const { id } = useParams();
+  console.log(id, "rfghjk");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-    //fetch single category
-    useEffect(() => {
+  //fetch single category
+  useEffect(() => {
     dispatch(fetchCatagoryAction(id));
-    },[])
-    //Get data from store
-const state =useSelector(state =>state?.category);
-const {loading,appErr,serverErr,category,UpdateCategory} =state;
+  }, []);
+  //Get data from store
+  const state = useSelector((state) => state?.category);
+  const { loading, appErr, serverErr, category, UpdateCategory } = state;
 
+  //formik
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      title: category?.title,
+    },
+    onSubmit: (values) => {
+      //build the date for update
 
+      //dispath the action
+      dispatch(updateCatagoriesAction({ title: values.title, id }));
+      navigate("/category-list");
+      console.log(values);
+    },
+    validationSchema: formSchema,
+  });
 
-
-    
-//formik
-const formik = useFormik({
-    enableReinitialize:true,
-  initialValues: {
-    title:category?.title,
-  },
-  onSubmit: values => {
-    //build the date for update
-
-    //dispath the action
-    dispatch(updateCatagoriesAction({title:values.title,id}))
-    navigate("/category-list")
-    console.log(values);
-  },
-  validationSchema: formSchema,
-});
-
-//Redirect
-if(UpdateCategory){
-  return navigate("/category-list")
-}
+  //Redirect
+  if (UpdateCategory) {
+    return navigate("/category-list");
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -64,16 +59,20 @@ if(UpdateCategory){
         <div>
           <BookOpenIcon className="mx-auto h-12 w-auto" />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-           Updated Category
+            Updated Category
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             <p className="font-medium text-indigo-600 hover:text-indigo-500">
               These are the categories user will select when creating a post
             </p>
-          {/* Display errot */}
-          <div>
-            {appErr || serverErr ? <h2 className="text-red-500-center text-lg">{serverErr} {appErr}</h2>:null} 
-          </div>
+            {/* Display errot */}
+            <div>
+              {appErr || serverErr ? (
+                <h2 className="text-red-500-center text-lg">
+                  {serverErr} {appErr}
+                </h2>
+              ) : null}
+            </div>
           </p>
         </div>
         {/* Form */}
@@ -86,7 +85,7 @@ if(UpdateCategory){
               </label>
               {/* Title */}
               <input
-              value={formik.values.title}
+                value={formik.values.title}
                 onChange={formik.handleChange("title")}
                 onBlur={formik.handleBlur("title")}
                 type="text"
@@ -95,7 +94,7 @@ if(UpdateCategory){
                 placeholder="New Category"
               />
               <div className="text-red-400 mb-2">
-                {formik.touched.title && formik.errors.title} 
+                {formik.touched.title && formik.errors.title}
               </div>
             </div>
           </div>
@@ -103,21 +102,21 @@ if(UpdateCategory){
           <div>
             <div>
               {/* Submit */}
-         {loading ?  
-          (<button
-               disabled
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <PlusCircleIcon
-                    className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
-                    aria-hidden="true"
-                  />
-                </span>
-               Loading please wait...
-              </button>
-  ):(
-    <>
+              {loading ? (
+                <button
+                  disabled
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <PlusCircleIcon
+                      className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
+                      aria-hidden="true"
+                    />
+                  </span>
+                  Loading please wait...
+                </button>
+              ) : (
+                <>
                   <button
                     type="submit"
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -133,13 +132,12 @@ if(UpdateCategory){
                   <button
                     onClick={() => dispatch(deleteCatagoriesAction(id))}
                     type="submit"
-                    className="group mt-2 relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="group mt-2 relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     Delete Category
                   </button>
                 </>
-  
-  )}
+              )}
             </div>
           </div>
         </form>
@@ -149,5 +147,3 @@ if(UpdateCategory){
 };
 
 export default UpdateCategory;
-
-

@@ -2,29 +2,36 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { PencilAltIcon, TrashIcon } from "@heroicons/react/solid";
 import { useParams,useNavigate } from "react-router-dom";
-import { fetchPostDetailsAction,deletePostAction } from "../../../redux/slices/Posts/PostSlices";
+import { fetchPostDetailsAction,deletePostAction, } from "../../../redux/slices/Posts/PostSlices";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import * as DOMPurify from "dompurify";
 import DateFormatter from "../../../utils/DateFormatter";
 import LoadingComponent from "../../../utils/LoadingComponent";
 import AddComment from "../../Comments/AddComment";
+import CommentsList from "../../Comments/CommentsList";
 
 const PostDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const Navigate =useNavigate();
+ //Select post details from store
+ const post = useSelector((state) => state?.post);
+ const { postDetails, loading, appErr, serverErr,isDeleted } = post;
+ 
+ 
+ //comment
+ const comment=useSelector(state=>state.comment);
+ const {commentCreated,commentDeleted}=comment
 
-  useEffect(() => {
-    dispatch(fetchPostDetailsAction(id));
-  }, [id, dispatch]);
-  //Select post details from store
-  const post = useSelector((state) => state?.post);
-  const { postDetails, loading, appErr, serverErr,isDeleted } = post;
+ useEffect(() => {
+  dispatch(fetchPostDetailsAction(id));
+}, [id, dispatch,commentCreated,commentDeleted]);
+
   //Get login user
   const user =useSelector((state) => state.users);
-   const {userAuth:{_id}} =user;
-   const isCreatedBy =postDetails?.user?._id ===_id;
+   const {userAuth} =user;
+   const isCreatedBy =postDetails?.user?._id ===userAuth?._id;
 
    console.log(isCreatedBy );
   if (isDeleted) return <Navigate to="/posts" />;
@@ -40,7 +47,7 @@ const PostDetails = () => {
           {appErr}
         </h1>
       ) : (
-        <section class="py-20 2xl:py-40 bg-gray-600 overflow-hidden">
+        <section class="py-20 2xl:py-40 bg-gray-400 overflow-hidden">
           <div className="container px-4 mx-auto">
             {/* Post Image */}
             <img
@@ -61,12 +68,14 @@ const PostDetails = () => {
                   alt=""
                 />
                 <div className="text-left">
+                  <Link to={`/profile/${postDetails?.user?._id}`}>
                   <h4 className="mb-1 text-2xl font-bold text-gray-50">
                     <span class="text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-yellow-200 to-orange-600">
                       {postDetails?.user?.firstName}{" "}
                       {postDetails?.user?.lastName}
                     </span>
                   </h4>
+                  </Link>
                   <p className="text-gray-500">
                     <DateFormatter date={postDetails?.createdAt} />
                   </p>
@@ -74,8 +83,14 @@ const PostDetails = () => {
               </div>
               {/* Post description */}
               <div class="max-w-xl mx-auto">
-                <p class="mb-6 text-left  text-xl text-gray-200">
-                  {postDetails?.description}
+                <p class="mb-6 text-left  text-xl text-black">
+                
+                 
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(postDetails?.description),
+                    }}
+                  ></div>
 
                   {/* Show delete and update btn if created user */}
                   {isCreatedBy ?<p class="flex">
@@ -91,10 +106,10 @@ const PostDetails = () => {
             </div>
           </div>
           {/* Add comment Form component here */}
-<AddComment postId={id}/>
+       {userAuth ? <AddComment postId={id}/>:null}
           <div className="flex justify-center  items-center">
-            {/* <CommentsList comments={post?.comments} postId={post?._id} /> */}
-            CommentsList
+            <CommentsList comments={postDetails?.comments}/>
+          
           </div>
         </section>
       )}

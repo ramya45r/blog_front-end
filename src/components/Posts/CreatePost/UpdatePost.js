@@ -102,9 +102,9 @@ const {loading,appErr, serverErr,isUpdated} =postUpdate;
                 <textarea
                   rows="5"
                   cols="10"
-                  // onBlur={formik.handleBlur("description")}
-                  // value={formik.values.description}
-                  // onChange={formik.handleChange("description")}
+                  onBlur={formik.handleBlur("description")}
+                  value={formik.values.description}
+                  onChange={formik.handleChange("description")}
                   className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
                   type="text"
                 ></textarea>

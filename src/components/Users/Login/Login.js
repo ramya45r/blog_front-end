@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -37,6 +37,16 @@ const Login = () => {
   if (userAuth) {
     navigate("/");
   }
+    //redirect
+    useEffect(() => {
+      if (userAuth?.isAdmin) {
+        //console.log(userAuth);
+        navigate("/");
+      }
+      if (userAuth?.isAdmin === false) {
+        navigate("/posts");
+      }
+    }, [userAuth, navigate]);
   return (
     <>
       <section className="min-h-screen relative py-20 2xl:py-40 bg-white-900 overflow-hidden">

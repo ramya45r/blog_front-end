@@ -1,8 +1,9 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createCommentAction } from "../../redux/slices/comments/commentSlices";
+import {updateCommentAction,fetchCommentAction } from "../../redux/slices/comments/commentSlices";
 import {useDispatch,useSelector} from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 //Form schema
@@ -10,42 +11,56 @@ const formSchema = Yup.object({
   description: Yup.string().required("Description is required"),
 });
 
-const AddComment = ({ postId }) => {
+const UpdateComment = () => {
+  const {id}=useParams()
     //dispatch
     const dispatch =useDispatch();
+    //Navigate
+    const Navigate= useNavigate();
+    //fetch comment
+  useEffect(()=>{
+   dispatch(fetchCommentAction(id))
+  },[dispatch,id])
 
-  //select data from store
-  const comment = useSelector(state=>state?.comment)
-  const {loading,appErr, serverErr} = comment
+
+   //select comment from store
+   const comment= useSelector(state=>state?.comment)
+   const{commentDetails,isUpdate}=comment;
   
   const formik = useFormik({
+    enableReinitialize:true,
     initialValues: {
-      description: "",
+      description:commentDetails?.description,
     },
+ 
     onSubmit: values => {
       const data = {
-        postId,
+        id,
         description: values?.description,
       };
-    //dispatch action
-    dispatch(createCommentAction(data))
+      //dispach action
+      dispatch(updateCommentAction(data))
+      
     },
     validationSchema: formSchema,
   });
+  //Redirect
+ if(isUpdate)  return <Navigate to="/posts" />;
   return (
+    <div className="h-96 flex justify-center items-center">
     <div className="flex flex-col justify-center items-center">
       <form
         onSubmit={formik.handleSubmit}
         className="mt-1 flex max-w-sm m-auto"
       >
-        <input
+        <textarea
           onBlur={formik.handleBlur("description")}
           value={formik.values.description}
           onChange={formik.handleChange("description")}
           type="text"
           name="text"
           id="text"
-          className="shadow-sm focus:ring-indigo-500  mr-2 focus:border-indigo-500 block w-full p-2 border-1 sm:text-sm border-gray-300 rounded-md"
+          className="shadow-sm focus:ring-indigo-500  mr-2 focus:border-indigo-500 block w-full p-2 border-2 sm:text-sm border-gray-300 rounded-md"
           placeholder="Add New comment"
         />
 
@@ -60,7 +75,8 @@ const AddComment = ({ postId }) => {
         {formik.touched.description && formik.errors.description}
       </div>
     </div>
+    </div>
   );
 };
 
-export default AddComment;
+export default  UpdateComment;
