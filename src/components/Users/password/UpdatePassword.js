@@ -11,7 +11,7 @@ const formSchema = Yup.object({
 const UpdatePassword = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   //formik
   const formik = useFormik({
     initialValues: {
@@ -25,11 +25,9 @@ const UpdatePassword = () => {
   });
   const users = useSelector(state => state?.users);
   const { isPasswordUpdated, loading, appErr, serverErr, userAuth } = users;
-
+console.log(userAuth?._id,'555555555555555');
    //redirect
-   if(isPasswordUpdated){
-    navigate(`/profile/${id}`);
-  }
+   if(isPasswordUpdated) return <Navigate to={`/profile/${userAuth._id}`}/>
   return (
     <div className="min-h-screen bg-gray-700  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -86,7 +84,9 @@ const UpdatePassword = () => {
                 className="inline-flex bg-gray-700"
               >
                 <span>Loaading.....</span>
-              </button>:  <button
+              </button>:  
+             <button
+            
                 type="submit"
                 className="inline-flex bg-indigo-700 justify-center w-full px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-200  hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
               >

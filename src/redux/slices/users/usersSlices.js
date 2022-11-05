@@ -87,6 +87,24 @@ export const fetchUserDetailsAction = createAsyncThunk(
     }
   }
 );
+
+//fetch friend details
+export const fetchFriendDetailsAction = createAsyncThunk(
+  "friend/detail",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.get(`${baseUrl}/api/conversation/${id}`);
+      return data;
+    } catch (error) {
+      if (!error?.response) throw error;
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+
+
+
 //fetch All users
 export const fetchUsersAction = createAsyncThunk(
   "user/list",
@@ -315,6 +333,8 @@ export const updateUserAction = createAsyncThunk(
     }
   }
 );
+
+
   //Update Password
   export const updatePasswordAction = createAsyncThunk(
     "password/update",
@@ -413,6 +433,27 @@ const usersSlices = createSlice({
       state.serverErr = undefined;
     });
     builder.addCase(fetchUserDetailsAction.rejected, (state, action) => {
+      
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
+
+    //-------------------------------------------friend details--------------------------------------//
+
+    builder.addCase(fetchFriendDetailsAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(fetchFriendDetailsAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.friedDetails = action?.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    });
+    builder.addCase(fetchFriendDetailsAction.rejected, (state, action) => {
       
       state.loading = false;
       state.appErr = action?.payload?.message;
@@ -623,6 +664,7 @@ const usersSlices = createSlice({
       state.serverError = action?.error?.message;
       state.loading = false;
     });
+
   },
 });
 

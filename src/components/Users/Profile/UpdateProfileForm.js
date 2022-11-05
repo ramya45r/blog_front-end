@@ -26,6 +26,7 @@ const UpdateProfileForm = () => {
     //get user from store
    const users= useSelector(state=>state.users);
    const {userDetails,isUpdated,loading,appErr,serverErr} =users;
+   
   //formik
   const formik = useFormik({
     enableReinitialize:true,

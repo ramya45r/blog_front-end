@@ -19,9 +19,10 @@ const navigation = [
   { name: "Home", href: "/", current: false },
   { name: "Create", href: "/create-post", current: false },
   { name: "Posts", href: "/posts", current: false },
-  { name: "Authors", href: "/users", current: false },
+  { name: "Users", href: "/users", current: false },
   { name: "Add Category", href: "/add-category", current: false },
   { name: "Category List", href: "/category-list", current: false },
+  { name: "Chat", href: "/messenger", current: false },
 ];
 
 function classNames(...classes) {
@@ -49,10 +50,10 @@ const AdminNavbar = ({ isLogin}) => {
   
 
   return (
-    <Disclosure as="nav" className="bg-blue-900">
+    <Disclosure as="nav" className="bg-gray-500 fixed w-full  ">
       {({ open }) => (
         <>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
             <div className="flex justify-between h-16">
               <div className="flex">
                 <div className="-ml-2 mr-2 flex items-center md:hidden">
@@ -103,17 +104,17 @@ const AdminNavbar = ({ isLogin}) => {
                     <span>New Post</span>
                   </Link>
                   {/* Logout */}
-                  <button
+                  <Link to='/'><button
                   onClick={()=>dispatch(logoutAction())}
                     type="button"
-                    className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+                    className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
                   >
                     <LogoutIcon
                       className="-ml-1 mr-2 h-5 w-5"
                       aria-hidden="true"
                     />
                     <span>Logout</span>
-                  </button>
+                  </button></Link>
                 </div>
                 <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                   {/* Profile dropdown */}

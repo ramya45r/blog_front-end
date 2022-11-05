@@ -29,8 +29,9 @@ const UpdateCategory = () => {
   }, []);
   //Get data from store
   const state = useSelector((state) => state?.category);
-  const { loading, appErr, serverErr, category, UpdateCategory } = state;
+  const { loading, appErr, serverErr, category, UpdateCategory,deletedCategory } = state;
 
+  
   //formik
   const formik = useFormik({
     enableReinitialize: true,
@@ -39,7 +40,8 @@ const UpdateCategory = () => {
     },
     onSubmit: (values) => {
       //build the date for update
-
+   
+      
       //dispath the action
       dispatch(updateCatagoriesAction({ title: values.title, id }));
       navigate("/category-list");
@@ -52,10 +54,13 @@ const UpdateCategory = () => {
   if (UpdateCategory) {
     return navigate("/category-list");
   }
-
+ //Redirect
+ if(deletedCategory) {
+  return navigate("/category-list");
+ }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className=" mt-4 max-w-md w-full space-y-8">
         <div>
           <BookOpenIcon className="mx-auto h-12 w-auto" />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -88,9 +93,11 @@ const UpdateCategory = () => {
                 value={formik.values.title}
                 onChange={formik.handleChange("title")}
                 onBlur={formik.handleBlur("title")}
-                type="text"
-                autoComplete="text"
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center focus:z-10 sm:text-sm"
+                id="title"
+                name="title"
+                type="title"
+                autoComplete="title"
+                className="appearance-none rounded-none  block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center focus:z-10 sm:text-sm"
                 placeholder="New Category"
               />
               <div className="text-red-400 mb-2">
@@ -119,20 +126,20 @@ const UpdateCategory = () => {
                 <>
                   <button
                     type="submit"
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="group  w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                      <PlusCircleIcon
+                      {/* <PlusCircleIcon
                         className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
                         aria-hidden="true"
-                      />
+                      /> */}
                     </span>
                     Update Category
                   </button>
                   <button
                     onClick={() => dispatch(deleteCatagoriesAction(id))}
                     type="submit"
-                    className="group mt-2 relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="group mt-2  w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     Delete Category
                   </button>

@@ -6,9 +6,8 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { uploadProfilePhotoAction } from "../../../redux/slices/users/usersSlices";
-
+import { useEffect, useState } from "react";
 //Css for dropzone
-
 const Container = styled.div`
   flex: 1;
   display: flex;
@@ -31,6 +30,7 @@ const formSchema = Yup.object({
 export default function UploadProfilePhoto() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [preview, setPreview] = useState('');
   //formik
 
   const formik = useFormik({
@@ -51,11 +51,25 @@ export default function UploadProfilePhoto() {
   if (profilePhoto) {
     navigate(`/profile/${userAuth?._id}`);
   }
+   // Image Preview
+	let image = formik?.values?.image;
+	useEffect(() => {
+		if (image) {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				setPreview(reader.result);
+			};
+			reader.readAsDataURL(image);
+		} else {
+			setPreview(null);
+		}
+	}, [image]);
   return (
+    // 
     <div className="min-h-screen bg-gray-200 flex flex-col justify-center py-12 sm:px-10 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 font-serif">
-          Upload profile photo
+          Upload Profile Photo
         </h2>
         {/* Displya err here */}
       </div>
@@ -70,11 +84,26 @@ export default function UploadProfilePhoto() {
                 {serverErr} {appErr}
               </h2>
             ) : null}
+
+          {/* image preview */}
+								{preview ? (
+									<div className="border border-gray-300 p-2 bg-gray-100 rounded-md shadow-sm">
+										<img
+											className="mx-auto  w-2/4"
+											src={preview}
+											alt=""
+											onClick={() => {
+												setPreview(null);
+											}}
+										/>
+									</div>
+								) : (
+
             <Container className="">
               <Dropzone
                 onBlur={formik.handleBlur("image")}
                 accept="image/jpeg, image/png"
-                onDrop={(acceptedFiles) => {
+                onDrop={acceptedFiles => {
                   formik.setFieldValue("image", acceptedFiles[0]);
                 }}
               >
@@ -83,7 +112,7 @@ export default function UploadProfilePhoto() {
                     <div
                       {...getRootProps({
                         className: "dropzone",
-                        onDrop: (event) => event.stopPropagation(),
+                        onDrop: event => event.stopPropagation(),
                       })}
                     >
                       <input {...getInputProps()} />
@@ -95,6 +124,7 @@ export default function UploadProfilePhoto() {
                 )}
               </Dropzone>
             </Container>
+                )}
 
             <div className="text-red-500">
               {formik.touched.image && formik.errors.image}
@@ -104,29 +134,25 @@ export default function UploadProfilePhoto() {
             </p>
 
             <div>
-              {loading ? (
-                <button
-                  disabled
-                  className="inline-flex justify-center w-full px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-                >
-                  <UploadIcon
-                    className="-ml-1 mr-2 h-5  text-gray-400"
-                    aria-hidden="true"
-                  />
-                  <span>Loading Please Wait....</span>
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="inline-flex justify-center w-full px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-                >
-                  <UploadIcon
-                    className="-ml-1 mr-2 h-5  text-gray-400"
-                    aria-hidden="true"
-                  />
-                  <span>Upload Photo</span>
-                </button>
-              )}
+            {loading ? (<button
+                disabled
+                className="inline-flex justify-center w-full px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+              >
+                <UploadIcon
+                  className="-ml-1 mr-2 h-5  text-gray-400"
+                  aria-hidden="true"
+                />
+                <span>Loading Please Wait....</span>
+              </button>):(<button
+                type="submit"
+                className="inline-flex justify-center w-full px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+              >
+                <UploadIcon
+                  className="-ml-1 mr-2 h-5  text-gray-400"
+                  aria-hidden="true"
+                />
+                <span>Upload Photo</span>
+              </button>)}
             </div>
           </form>
         </div>

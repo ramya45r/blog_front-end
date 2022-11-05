@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import CategoriesOptions from '../../Categories/CategoryDropdown'
 import { fetchPostDetailsAction,updatePostAction } from "../../../redux/slices/Posts/PostSlices";
-
+import JoditEditor from "jodit-react";
+import { useRef } from "react";
 const formSchema = Yup.object({
   title: Yup.string().required("Title is required"),
   description: Yup.string().required("Description is required"),
@@ -15,6 +16,7 @@ const formSchema = Yup.object({
 export default function UpdatePost(props) {
     const { id } = useParams();
     const navigate= useNavigate();
+    const editor = useRef(null);
 //fetch the post in the url
 const dispatch =useDispatch();
 useEffect(()=>{
@@ -99,15 +101,18 @@ const {loading,appErr, serverErr,isUpdated} =postUpdate;
                 >
                   Description
                 </label>
-                <textarea
-                  rows="5"
-                  cols="10"
-                  onBlur={formik.handleBlur("description")}
+                 {/* Description */}
+                 <JoditEditor
+                  ref={editor}
                   value={formik.values.description}
                   onChange={formik.handleChange("description")}
+                  onBlur={formik.handleBlur("description")}
+                  rows="5"
+                  cols="10"
                   className="rounded-lg appearance-none block w-full py-3 px-3 text-base text-center leading-tight text-gray-600 bg-transparent focus:bg-transparent  border border-gray-200 focus:border-gray-500  focus:outline-none"
                   type="text"
-                ></textarea>
+                />
+                
                 <div className="text-red-500">
                   {formik.touched.description && formik.errors.description}
                 </div>

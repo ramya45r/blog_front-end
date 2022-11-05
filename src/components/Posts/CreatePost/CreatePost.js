@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import JoditEditor from "jodit-react";
 import Dropzone from "react-dropzone";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { createpostAction } from "../../../redux/slices/Posts/PostSlices";
@@ -36,6 +36,7 @@ export default function CreatePost() {
   const editor = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [preview, setPreview] = useState('');
   //select store data
   const post = useSelector((state) => state.post);
   const { postCreated, loading, appErr, serverErr } = post;
@@ -63,6 +64,20 @@ export default function CreatePost() {
     },
     validationSchema: formSchema,
   });
+  
+  // Image Preview
+	let image = formik?.values?.image;
+	useEffect(() => {
+		if (image) {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				setPreview(reader.result);
+			};
+			reader.readAsDataURL(image);
+		} else {
+			setPreview(null);
+		}
+	}, [image]);
 
   return (
     <>
@@ -115,7 +130,9 @@ export default function CreatePost() {
                 onBlur={formik.setFieldTouched}
                 error={formik.errors.category}
                 touched={formik.touched.category}
+               
               />
+             
               <div>
                 <label
                   htmlFor="password"
@@ -135,6 +152,18 @@ export default function CreatePost() {
                   type="text"
                 />
                 {/* {image component} */}
+                {preview ? (
+									<div className="border border-gray-300 p-2 bg-gray-100 rounded-md shadow-sm">
+										<img
+											className="mx-auto  w-2/4"
+											src={preview}
+											alt=""
+											onClick={() => {
+												setPreview(null);
+											}}
+										/>
+									</div>
+								) : (
                 <Container className="container bg-gray-700">
                   <Dropzone
                     onBlur={formik.handleBlur("image")}
@@ -160,6 +189,7 @@ export default function CreatePost() {
                     )}
                   </Dropzone>
                 </Container>
+                    )}
                 {/* Err msg */}
                 <div className="text-red-500">
                   {formik?.touched?.description && formik.errors?.description}

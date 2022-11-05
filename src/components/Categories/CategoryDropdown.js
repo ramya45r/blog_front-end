@@ -49,13 +49,19 @@ const CategoryDropdown = (props) => {
           Product categorylist is loading. Please wait.....
         </h3>
       ) : (
+        <>
         <Select
+        
           onChange={handleChange}
           onBlur={handleBlur}
           id="category"
           options={allCategories}
           value={props?.value?.label}
-        />
+         
+        /> 
+        
+
+        </>
       )}
       {/* Display */}
       {props?.error && (

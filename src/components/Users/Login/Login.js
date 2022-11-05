@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 // import poster from "../../../img/poster.png";
 import { loginUserAction } from "../../../redux/slices/users/usersSlices";
-
+import login2 from '../Login/image/Aablog.jpg';
 //Form schema
 const formSchema = Yup.object({
   email: Yup.string().required("Email is required"),
@@ -169,8 +169,8 @@ const Login = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full lg:w-3/5 px-4 mb-16 lg:mb-0 order-first lg:order-last">
-                <span className="flex mb-10 mx-auto items-center justify-center h-20 w-20 bg-gray-500 rounded-lg">
+              <div className="w-full  lg:w-3/5 px-4 mb-16 lg:mb-0 order-first lg:order-last pl-6 ">
+                {/* <span className="flex mb-10 mx-auto items-center justify-center h-20 w-20 bg-gray-500 rounded-lg">
                   <svg
                     width="37"
                     height="37"
@@ -209,10 +209,19 @@ const Login = () => {
                       ></path>
                     </g>
                   </svg>
-                </span>
-                <h2 className="mb-10 text-center text-6xl lg:text-7xl text-black-300 font-bold font-heading">
+                </span> */}
+                 {/* <div className="w-60 lg:w-1/2 px-5 ml-30 flex mb-10 mx-auto items-center justify-center h-20 w-20"> */}
+         
+         <img className="w-full" src={login2} alt={login2 } />
+          
+       
+       {/* </div> */}
+       {/* <div>
+            <h2 className="mb-10 text-center text-6xl lg:text-7xl text-black-300 font-bold font-heading ml-15">
                   Ready to start? Login Now.
                 </h2>
+            </div> */}
+                
               </div>
             </div>
           </div>
