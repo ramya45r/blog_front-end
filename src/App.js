@@ -20,6 +20,7 @@ import UsersList from "./components/Users/usersList/UsersList";
 import Messenger from "./components/messenger/Messenger";
 import Error from "./pages/navigation/Error/Error";
 import Modify from "./components/messenger/Modify";
+import UploadCoverPhoto from "./components/Users/Profile/UploadCoverPhoto";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
           <Route exact path="/messenger" element={<Messenger />} />
           <Route exact path="/*" element={<Error />} />
           <Route exact path="/m" element={<Modify/>} />
+          <Route exact path="//coverphoto-upload/:id" element={<UploadCoverPhoto/>} />
         </Routes>
       </Router>
     </div>

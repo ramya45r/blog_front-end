@@ -368,6 +368,37 @@ export const updateUserAction = createAsyncThunk(
     }
   );
 
+  //upload cover photo
+
+export const uploadCoverPhotoAction = createAsyncThunk(
+  "user/cover-photo",
+  async (userImg, { rejectWithValue, getState, dispatch }) => {
+    const user = getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    try {
+      //http call
+      const formData = new FormData();
+      formData.append("image", userImg?.image);
+      const { data } = await axiosInstance.put(
+        `/api/users/coverphoto-upload`,
+        formData,
+        config
+      );
+
+      return data;
+    } catch (error) {
+      if (!error?.response) throw error;
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+
 //get user from local storage and place into store
 const userLoginFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -663,6 +694,23 @@ const usersSlices = createSlice({
       state.appErr = action?.payload?.message;
       state.serverError = action?.error?.message;
       state.loading = false;
+    });
+     //--------------upload cover photo --------------
+     builder.addCase(uploadCoverPhotoAction.pending, (state, action) => {
+      state.loading = true;
+      state.appErr = undefined;
+      state.serverError = undefined;
+    });
+    builder.addCase(uploadCoverPhotoAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.coverPhoto = action?.payload;
+      state.appErr = undefined;
+      state.serverError = undefined;
+    });
+    builder.addCase(uploadCoverPhotoAction.rejected, (state, action) => {
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverError = action?.error?.message;
     });
 
   },

@@ -25,6 +25,7 @@ import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { toast, Toaster } from "react-hot-toast";
 import { FaRegBookmark, FaBookmark, FaFlag, FaRegFlag } from "react-icons/fa";
+
 import {
   FacebookShareButton,
   LinkedinShareButton,
@@ -72,6 +73,7 @@ const PostDetails = () => {
 
   useEffect(() => {
     dispatch(fetchPostDetailsAction(id));
+    dispatch(fetchSavedPostAction(""));
   }, [id, dispatch, commentCreated, commentDeleted, savedPost, saved, reports]);
 
   //Get login user
